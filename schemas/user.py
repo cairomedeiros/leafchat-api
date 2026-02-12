@@ -8,5 +8,6 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
-class UserOut(BaseModel):
-    id: str
+class UserLogin(BaseModel):
+    email: str
+    password: str

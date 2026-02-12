@@ -1,10 +1,13 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
-from datetime import datetime
+from sqlalchemy import Column, String, Boolean, DateTime, text
+from sqlalchemy.dialects.postgresql import UUID
 
-class User():
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True)
     name = Column(String(255), nullable=False)
     email = Column(String(255), unique=True, index=True)
-    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
-    disabled = Column(Boolean, index=True, default=False)
+    created_at = Column(DateTime, server_default=text('now()'))
+    disabled = Column(Boolean, default=False)

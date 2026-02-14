@@ -1,9 +1,10 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from datetime import datetime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, text
+from sqlalchemy.dialects.postgresql import UUID
+from .base import Base
 
-class Plant():
+class Plant(Base):
     __tablename__ = "plants"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), index=True)
-    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True)
+    name = Column(String(255), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), index=True)
+    created_at = Column(DateTime, server_default=text('now()'), nullable=False)

@@ -1,9 +1,7 @@
 from sqlalchemy import Column, String, Boolean, DateTime, text
 from sqlalchemy.dialects.postgresql import UUID
+from .base import Base
 
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
     id = Column(UUID(as_uuid=True), primary_key=True)

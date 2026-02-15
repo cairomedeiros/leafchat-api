@@ -28,4 +28,3 @@ async def login(user: UserSchemas.UserLogin):
                 }
         )
         return response.session
-

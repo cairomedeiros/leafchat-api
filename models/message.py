@@ -1,6 +1,7 @@
 from sqlalchemy import (
     Column,
     ForeignKey,
+    String,
     Enum as SQLAlchemyEnum,
     Text,
     DateTime,
@@ -14,15 +15,15 @@ class ChatRole(enum.Enum):
     USER = "user"
     ASSISTANT = "assistant"
 
-class ChatHistory(Base):
+class Message(Base):
     __tablename__ = "chat_history"
     id = Column(UUID(as_uuid=True), primary_key=True)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), index=True)
-    plant_id = Column(UUID(as_uuid=True), ForeignKey("plants.id"), index=True)
+    chat_id = Column(UUID(as_uuid=True), ForeignKey("chats.id"), index=True)
     role = Column(
         SQLAlchemyEnum(ChatRole, name="chat_role_enum"),
         nullable=False,
         index=True
     )
     content = Column(Text, nullable=False)
+    image_path = Column(String(400), nullable=True)
     created_at = Column(DateTime, server_default=text('now()'))

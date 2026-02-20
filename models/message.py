@@ -16,7 +16,7 @@ class ChatRole(enum.Enum):
     ASSISTANT = "assistant"
 
 class Message(Base):
-    __tablename__ = "chat_history"
+    __tablename__ = "messages"
     id = Column(UUID(as_uuid=True), primary_key=True)
     chat_id = Column(UUID(as_uuid=True), ForeignKey("chats.id"), index=True)
     role = Column(

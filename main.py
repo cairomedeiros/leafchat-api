@@ -1,9 +1,13 @@
 from fastapi import FastAPI
-from .routers import user, plant
+from .routers import user, plant, chat, message, plant_pictures, watering_events
 
 app = FastAPI()
 app.include_router(user.router, prefix="/user", tags=["user"])
 app.include_router(plant.router, prefix="/plant", tags=["plant"])
+app.include_router(chat.router, prefix="/chat", tags=["chat"])
+app.include_router(message.router, prefix="/message", tags=["message"])
+app.include_router(plant_pictures.router, prefix="/plant_pictures", tags=["plant_pictures"])
+app.include_router(watering_events.router, prefix="/watering_events", tags=["watering_events"])
 
 @app.get("/")
 async def root():

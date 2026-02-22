@@ -6,13 +6,13 @@ from ..schemas import chat as ChatSchemas
 router = APIRouter()
 
 @router.post("/create")
-async def create(new_chat_message: ChatSchemas.ChatCreate, current_user = Depends(get_current_user)):
+async def create(new_chat: ChatSchemas.ChatCreate, current_user = Depends(get_current_user)):
         supabase = get_db()
         supabase.postgrest.auth(current_user["access_token"])
 
         response = (
             supabase.table("chat")
-            .insert(new_chat_message.model_dump())
+            .insert(new_chat.model_dump())
             .execute()
         )
         

@@ -7,13 +7,9 @@ from sqlalchemy import (
     DateTime,
     text
 )
-import enum
 from sqlalchemy.dialects.postgresql import UUID
 from .base import Base
-
-class ChatRole(enum.Enum):
-    USER = "user"
-    ASSISTANT = "assistant"
+from enums.chat_role import ChatRole
 
 class Message(Base):
     __tablename__ = "messages"

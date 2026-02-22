@@ -41,5 +41,3 @@ Ensure you have all necessary environment variables configured. The project requ
 - `SUPABASE_URL`: The URL of your Supabase instance.
 - `SUPABASE_PUBLISHABLE_KEY`: The public key for accessing Supabase.
 - `SUPABASE_SECRET_KEY`: The secret key for accessing Supabase.
-
-If the project uses a `.env` file, make sure it is present in the root directory and contains these variables.

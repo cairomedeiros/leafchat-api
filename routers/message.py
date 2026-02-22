@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from ..auth.dependencies import get_current_user
 from ..config.supabase import get_db
 from ..schemas import message as MessageSchemas
@@ -13,6 +13,11 @@ async def create(image: UploadFile | None = File(default=None),
                  current_user = Depends(get_current_user)):
         supabase = get_db()
         supabase.postgrest.auth(current_user["access_token"])
+
+        if not new_message.content and not image:
+            raise HTTPException(status_code=400, detail="A message must have either content or an image.")
+
+        image_path = None
 
         if image:
             contents = await image.read()

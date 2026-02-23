@@ -3,7 +3,7 @@ from ..auth.dependencies import get_current_user
 from ..config.supabase import get_db
 from ..schemas import message as MessageSchemas
 import os, uuid
-from enums.chat_role import ChatRole
+from ..enums.chat_role import ChatRole
 
 router = APIRouter()
 

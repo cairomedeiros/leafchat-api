@@ -5,7 +5,7 @@ from ..schemas import plant as PlantsSchemas
 
 router = APIRouter()
 
-@router.post("/create")
+@router.post("/create", response_model=PlantsSchemas.Plant)
 async def create(new_plant: PlantsSchemas.PlantCreate, 
                  current_user = Depends(get_current_user)):
         supabase = get_db()
@@ -15,10 +15,12 @@ async def create(new_plant: PlantsSchemas.PlantCreate,
             .insert(new_plant.model_dump())
             .execute()
         )
+        if response.data is None:
+                raise HTTPException(status_code=400, detail="Failed to create plant")
         
-        return response
+        return response.data[0]
 
-@router.patch("/upsert/{plant_id}")
+@router.patch("/upsert/{plant_id}", response_model=PlantsSchemas.Plant)
 async def upsert(plant_id: str,
                  plant: PlantsSchemas.PlantUpdate,
                  current_user = Depends(get_current_user)):
@@ -34,9 +36,12 @@ async def upsert(plant_id: str,
             .upsert({**update_data, "id": plant_id})
             .execute()
         )
-        return response
+        if response.data is None:
+                raise HTTPException(status_code=400, detail="Failed to update plant")
 
-@router.get("/get/{plant_id}")
+        return response.data[0]
+
+@router.get("/get/{plant_id}", response_model=PlantsSchemas.Plant)
 async def get(plant_id: str, current_user=Depends(get_current_user)):
     supabase = get_db()
     supabase.postgrest.auth(current_user["access_token"])
@@ -55,9 +60,9 @@ async def get(plant_id: str, current_user=Depends(get_current_user)):
     if not response.data:
         raise HTTPException(status_code=404, detail="Plant not found")
 
-    return response
+    return response.data
 
-@router.get("/list")
+@router.get("/list", response_model=list[PlantsSchemas.Plant])
 async def list(current_user=Depends(get_current_user)):
     supabase = get_db()
     supabase.postgrest.auth(current_user["access_token"])
@@ -71,5 +76,7 @@ async def list(current_user=Depends(get_current_user)):
         .order("created_at", desc=True)
         .execute()
     )
+    if response.data is None:
+        raise HTTPException(status_code=400, detail="Failed to list plants")
 
-    return response
+    return response.data

@@ -20,6 +20,6 @@ class Message(Base):
         nullable=False,
         index=True
     )
-    content = Column(Text, nullable=False)
+    content = Column(Text, nullable=True)
     image_path = Column(String(400), nullable=True)
     created_at = Column(DateTime, server_default=text('now()'))

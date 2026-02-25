@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from ..auth.dependencies import get_current_user
 from ..config.supabase import get_db
-from ..schemas.watering_events import WateringEventCreate
+from ..schemas.watering_events import WateringEventCreate, WateringEvent
 
 router = APIRouter()
 
-@router.post("/create")
+@router.post("/create", response_model=WateringEvent)
 async def create(watering_event: WateringEventCreate, 
                  current_user = Depends(get_current_user)):
         supabase = get_db()
@@ -16,10 +16,13 @@ async def create(watering_event: WateringEventCreate,
             .insert(watering_event.model_dump())
             .execute()
         )
-        
-        return response
 
-@router.get("/list/{plant_id}")
+        if not response.data:
+            raise HTTPException(status_code=500, detail="Failed to create watering event.")
+        
+        return response.data[0]
+
+@router.get("/list/{plant_id}", response_class=list[WateringEvent])
 async def list(plant_id: str, current_user=Depends(get_current_user)):
     supabase = get_db()
     supabase.postgrest.auth(current_user["access_token"])
@@ -32,9 +35,12 @@ async def list(plant_id: str, current_user=Depends(get_current_user)):
         .execute()
     )
 
-    return response
+    if not response.data:
+        raise HTTPException(status_code=404, detail="No watering events found for this plant.")
 
-@router.delete("/delete/{plant_id}")
+    return response.data
+
+@router.delete("/delete/{plant_id}", response_model=dict)
 async def delete(plant_id: str, current_user = Depends(get_current_user)):
         supabase = get_db()
         supabase.postgrest.auth(current_user["access_token"])
@@ -45,4 +51,8 @@ async def delete(plant_id: str, current_user = Depends(get_current_user)):
             .eq("plant_id", plant_id)
             .execute()
         )
-        return response
+
+        if not response.data:
+            raise HTTPException(status_code=404, detail="No watering events found for this plant.")
+
+        return response.data[0]

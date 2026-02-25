@@ -16,7 +16,7 @@ async def create(new_plant: PlantsSchemas.PlantCreate,
             .execute()
         )
         if response.data is None:
-                raise HTTPException(status_code=400, detail="Failed to create plant")
+                raise HTTPException(status_code=400, detail="Failed to create plant.")
         
         return response.data[0]
 
@@ -37,7 +37,7 @@ async def upsert(plant_id: str,
             .execute()
         )
         if response.data is None:
-                raise HTTPException(status_code=400, detail="Failed to update plant")
+                raise HTTPException(status_code=400, detail="Failed to update plant.")
 
         return response.data[0]
 
@@ -58,7 +58,7 @@ async def get(plant_id: str, current_user=Depends(get_current_user)):
     )
 
     if not response.data:
-        raise HTTPException(status_code=404, detail="Plant not found")
+        raise HTTPException(status_code=404, detail="Plant not found.")
 
     return response.data
 
@@ -77,6 +77,6 @@ async def list(current_user=Depends(get_current_user)):
         .execute()
     )
     if response.data is None:
-        raise HTTPException(status_code=400, detail="Failed to list plants")
+        raise HTTPException(status_code=400, detail="Failed to list plants.")
 
     return response.data

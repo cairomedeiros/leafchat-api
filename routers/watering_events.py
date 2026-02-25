@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from ..auth.dependencies import get_current_user
 from ..config.supabase import get_db
-from ..schemas.watering_events import WateringEventCreate, WateringEvent
+from ..schemas import watering_events as WateringSchemas
 
 router = APIRouter()
 
-@router.post("/create", response_model=WateringEvent)
-async def create(watering_event: WateringEventCreate, 
+@router.post("/create", response_model=WateringSchemas.WateringEvent)
+async def create(watering_event: WateringSchemas.WateringEventCreate, 
                  current_user = Depends(get_current_user)):
         supabase = get_db()
         supabase.postgrest.auth(current_user["access_token"])
@@ -22,7 +22,7 @@ async def create(watering_event: WateringEventCreate,
         
         return response.data[0]
 
-@router.get("/list/{plant_id}", response_class=list[WateringEvent])
+@router.get("/list/{plant_id}", response_class=list[WateringSchemas.WateringEvent])
 async def list(plant_id: str, current_user=Depends(get_current_user)):
     supabase = get_db()
     supabase.postgrest.auth(current_user["access_token"])
